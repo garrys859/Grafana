@@ -1,19 +1,25 @@
-version: '3.8'
+version: '3'
 
 services:
   grafana:
     image: grafana/grafana:latest
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - grafana_logs:/var/log/grafana
-      - grafana_config:/etc/grafana
+    container_name: grafana
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    restart: unless-stopped
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=6tC+GRAFANA
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - grafana-configs:/etc/grafana
+      - grafana-logs:/var/log/grafana
+    command:
+      - "grafana-cli plugins install grafana-piechart-panel && /run.sh"
 
 volumes:
-  grafana_data:
-  grafana_logs:
-  grafana_config:
+  grafana-storage:
+    driver: local
+  grafana-configs:
+    driver: local
+  grafana-logs:
+    driver: local
